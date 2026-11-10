@@ -22,7 +22,7 @@
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); line-height: 1.45; }
-    .container { max-width: 1100px; margin: 0 auto; }
+    .container { max-width: 1120px; margin: 0 auto; }
     h1 { font-size: 1.4rem; margin: 0 0 14px 0; color: #0f172a; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
     .section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
@@ -37,17 +37,17 @@
       .grid-3, .grid-4 { grid-template-columns: 1fr; }
     }
     label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
-    input, select { width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #fff; color: var(--text); }
+    input, select { width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.92rem; background: #fff; color: var(--text); }
     input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
     .segmented { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; }
     .segmented button { flex: 1; border: none; background: transparent; padding: 7px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #475569; cursor: pointer; transition: 0.15s; }
     .segmented button.active { background: #fff; color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
     .info-pill { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.83rem; color: #334155; margin-top: 10px; }
-    .seg-layout { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; }
+    .seg-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; align-items: start; }
     .sub-box { border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fcfcfd; }
-    .overload-alert { background: var(--danger-bg); border: 1px solid #f87171; color: #991b1b; padding: 12px; border-radius: 9px; margin-top: 10px; font-size: 0.88rem; }
-    .overload-alert strong { display: block; margin-bottom: 4px; font-size: 0.93rem; }
-    .ok-alert { background: var(--success-bg); border: 1px solid #86efac; color: #166534; padding: 9px 12px; border-radius: 8px; margin-top: 10px; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; }
+    .overload-alert { background: var(--danger-bg); border: 1px solid #f87171; color: #991b1b; padding: 12px; border-radius: 9px; margin-top: 10px; font-size: 0.86rem; }
+    .overload-alert strong { display: block; margin-bottom: 4px; font-size: 0.92rem; }
+    .ok-alert { background: var(--success-bg); border: 1px solid #86efac; color: #166534; padding: 9px 12px; border-radius: 8px; margin-top: 10px; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.15s; }
     .btn-primary { background: var(--primary); color: #fff; }
     .btn-primary:hover { background: var(--primary-hover); }
@@ -57,7 +57,7 @@
     .btn-danger-fix { background: var(--danger); color: #fff; }
     .result-panel { border: 1px solid var(--border); border-radius: 10px; padding: 15px; background: #f8fafc; position: relative; overflow: hidden; }
     .result-panel.blocked .calc-content { filter: blur(5px); pointer-events: none; user-select: none; opacity: 0.35; }
-    .lock-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: rgba(255,255,255,0.78); z-index: 5; }
+    .lock-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: rgba(255,255,255,0.82); z-index: 5; }
     .lock-badge { background: var(--danger); color: #fff; padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
     .formula-box { background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 10px; font-family: ui-monospace, monospace; font-size: 0.82rem; margin: 10px 0; overflow-x: auto; }
     .big-num { font-size: 1.55rem; font-weight: 800; }
@@ -66,10 +66,10 @@
     .status-bad { background: var(--danger-bg); color: var(--danger); }
     .toggle-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--primary); font-weight: 600; cursor: pointer; }
     .toggle-row input { width: auto; margin: 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
     th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
     th { background: #f1f5f9; font-weight: 600; color: #334155; }
-    textarea { width: 100%; min-height: 150px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, monospace; font-size: 0.83rem; resize: vertical; }
+    textarea { width: 100%; min-height: 160px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, monospace; font-size: 0.82rem; resize: vertical; }
   </style>
 </head>
 <body>
@@ -124,6 +124,7 @@
             <th>№</th>
             <th>Участок</th>
             <th>Кабель / Провод</th>
+            <th>Прокладка</th>
             <th>L, м</th>
             <th>P, кВт / cos φ</th>
             <th>Iр / Iдоп.расч, А</th>
@@ -146,7 +147,6 @@
 </div>
 
 <script>
-// Справочник сечений: r0 (Ом/км при 20°C) и допустимые токи (Земля / Воздух) по ПУЭ и ГОСТ
 const SECTIONS = [4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300, 400];
 
 const R0_TABLE = {
@@ -156,22 +156,31 @@ const R0_TABLE = {
 
 // Базовые длительно допустимые токи Iдоп (А) для 0,4-10 кВ: [Земля, Воздух]
 const IDOP_TABLE = {
-  pvc: { // ПВХ изоляция (АВБШв, ВБШв, АВВГ, ВВГ)
+  pvc: {
     Al: { 4:[32,24], 6:[40,31], 10:[55,42], 16:[75,56], 25:[95,73], 35:[115,89], 50:[140,108], 70:[175,135], 95:[210,164], 120:[240,189], 150:[275,217], 185:[310,248], 240:[360,292], 300:[410,335], 400:[470,390] },
     Cu: { 4:[42,32], 6:[53,40], 10:[71,55], 16:[95,73], 25:[120,95], 35:[145,115], 50:[175,140], 70:[220,175], 95:[265,215], 120:[300,245], 150:[340,280], 185:[385,320], 240:[450,375], 300:[510,430], 400:[580,500] }
   },
-  xlpe: { // СПЭ изоляция (АПвБШп, ПвБШп, АПвПу, ПвПу)
+  xlpe: {
     Al: { 4:[38,29], 6:[47,37], 10:[65,50], 16:[88,67], 25:[115,88], 35:[138,106], 50:[165,129], 70:[205,161], 95:[245,196], 120:[280,226], 150:[320,260], 185:[362,297], 240:[422,350], 300:[480,400], 400:[550,465] },
     Cu: { 4:[49,38], 6:[62,48], 10:[83,65], 16:[110,87], 25:[142,113], 35:[172,138], 50:[208,168], 70:[258,210], 95:[310,255], 120:[352,293], 150:[400,335], 185:[452,382], 240:[528,448], 300:[600,510], 400:[685,590] }
   },
-  bpi: { // Бумажная пропитанная изоляция 6/10 кВ (АСБ, АСБ2л, ЦАСБ)
+  bpi: {
     Al: { 16:[65,50], 25:[85,65], 35:[105,80], 50:[130,100], 70:[165,125], 95:[200,155], 120:[230,180], 150:[265,205], 185:[300,235], 240:[350,275] },
     Cu: { 16:[85,65], 25:[110,85], 35:[135,105], 50:[165,130], 70:[210,165], 95:[255,200], 120:[295,230], 150:[340,265], 185:[385,305], 240:[450,355] }
   },
-  sip: { // СИП-2 / СИП-3 / СИП-4 (только воздух)
+  sip: {
     Al: { 16:[95,95], 25:[125,125], 35:[155,155], 50:[190,190], 70:[240,240], 95:[295,295], 120:[340,340], 150:[390,390], 185:[445,445], 240:[525,525] },
     Cu: { 16:[115,115], 25:[150,150], 35:[185,185], 50:[230,230], 70:[290,290], 95:[355,355], 120:[410,410] }
   }
+};
+
+// Справочник способов прокладки (по умолчанию pipe_090)
+const LAY_MODES = {
+  pipe_090: { label: "В отдельных трубах ПНД / ГНБ — k = 0,90", short: "Отд. трубы ПНД/ГНБ (k=0,90)", env: "ground", kPipe: 0.90 },
+  pipe_094: { label: "Частично в трубах (короткие переходы) — k = 0,94", short: "Частично в трубах (k=0,94)", env: "ground", kPipe: 0.94 },
+  trench:   { label: "В земле (траншея без труб) — k = 1,00", short: "Траншея (k=1,00)", env: "ground", kPipe: 1.00 },
+  pipe_pue: { label: "В трубах по ПУЭ п.1.3.10 / ГОСТ 31996 (ток как на воздухе)", short: "Трубы по ПУЭ (ток воздух)", env: "air", kPipe: 1.00 },
+  air:      { label: "На воздухе / в лотке / коробе", short: "На воздухе", env: "air", kPipe: 1.00 }
 };
 
 function getDefaultX0(cableType, s) {
@@ -183,6 +192,7 @@ function getDefaultX0(cableType, s) {
   return 0.072;
 }
 
+// Стандартный выбор по умолчанию: pipe_090 ("В отдельных трубах ПНД / ГНБ — k = 0,90")
 let segments = [
   {
     from: "РУ-0,4 кВ ТП-1",
@@ -194,9 +204,9 @@ let segments = [
     s: 120,
     n: 1,
     L: 180,
-    layMode: "trench", // trench | pipe | air
-    kGroup: 1.0,       // поправка на число кабелей в траншее
-    kExtra: 1.0,       // доп. коэффициент (температура/грунт)
+    layMode: "pipe_090",
+    kPipe: 0.90,
+    kGroup: 1.0,
     autoSize: false,
     r0: 0.253,
     x0: 0.075
@@ -211,18 +221,20 @@ function onVoltageChange() {
   renderAll();
 }
 
-function getIdopBase(seg) {
+function getIdopBaseForSection(seg, sVal) {
   const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
   const matTbl = grp[seg.mat] || grp.Al;
-  const pair = matTbl[seg.s] || [200, 160];
+  const pair = matTbl[sVal] || [200, 160];
   if (seg.cableType === 'sip') return pair[1];
-  return seg.layMode === 'air' ? pair[1] : pair[0];
+  const modeObj = LAY_MODES[seg.layMode] || LAY_MODES.pipe_090;
+  return modeObj.env === 'air' ? pair[1] : pair[0];
 }
 
 function getTotalK(seg) {
-  if (seg.cableType === 'sip') return seg.kExtra;
-  const kPipe = seg.layMode === 'pipe' ? 0.88 : 1.0; // снижение в трубе ПНД/ГНБ
-  return +(kPipe * seg.kGroup * seg.kExtra).toFixed(3);
+  if (seg.cableType === 'sip') return 1.0;
+  const kP = seg.kPipe || 1.0;
+  const kG = seg.kGroup || 1.0;
+  return +(kP * kG).toFixed(3);
 }
 
 function calcIp(P, cosPhi) {
@@ -239,7 +251,7 @@ function findMinSection(seg, Ip) {
   const kTotal = getTotalK(seg);
   for (let s of SECTIONS) {
     if (!matTbl[s]) continue;
-    const base = (seg.cableType === 'sip' || seg.layMode === 'air') ? matTbl[s][1] : matTbl[s][0];
+    const base = getIdopBaseForSection(seg, s);
     const idopCalc = base * seg.n * kTotal;
     if (idopCalc >= Ip) return s;
   }
@@ -255,7 +267,7 @@ function syncLookup(idx) {
 
 function updateSeg(idx, field, val) {
   const seg = segments[idx];
-  if (['P','cosPhi','L','r0','x0','kGroup','kExtra'].includes(field)) {
+  if (['P','cosPhi','L','r0','x0','kGroup','kPipe'].includes(field)) {
     seg[field] = parseFloat(val) || 0;
   } else if (['s','n'].includes(field)) {
     seg[field] = parseInt(val, 10) || 1;
@@ -263,7 +275,11 @@ function updateSeg(idx, field, val) {
     seg[field] = val;
   }
 
-  // Если выбрали n > 1 и kGroup был 1.0, подскажем коэффициент параллельной прокладки
+  // При смене способа прокладки автоматически подставляем соответствующий kPipe
+  if (field === 'layMode' && LAY_MODES[val]) {
+    seg.kPipe = LAY_MODES[val].kPipe;
+  }
+
   if (field === 'n' && seg.n >= 2 && seg.kGroup === 1.0) {
     seg.kGroup = seg.n === 2 ? 0.90 : (seg.n === 3 ? 0.85 : 0.80);
   }
@@ -272,7 +288,6 @@ function updateSeg(idx, field, val) {
     syncLookup(idx);
   }
 
-  // Если включен автоподбор сечения по току
   if (seg.autoSize && field !== 's' && field !== 'r0' && field !== 'x0') {
     const Ip = calcIp(seg.P, seg.cosPhi || 0.9);
     const bestS = findMinSection(seg, Ip);
@@ -282,7 +297,6 @@ function updateSeg(idx, field, val) {
     }
   }
 
-  // Синхронизация узла "Откуда" следующего участка
   if (field === 'to' && segments[idx + 1]) {
     segments[idx + 1].from = seg.to;
   }
@@ -308,9 +322,9 @@ function addSegment() {
     s: prev.s,
     n: prev.n,
     L: 100,
-    layMode: prev.layMode,
+    layMode: prev.layMode || "pipe_090",
+    kPipe: prev.kPipe || 0.90,
     kGroup: prev.kGroup,
-    kExtra: prev.kExtra,
     autoSize: prev.autoSize,
     r0: prev.r0,
     x0: prev.x0
@@ -347,22 +361,21 @@ function renderAll() {
     const Q = seg.P * tg;
     const Ip = calcIp(seg.P, cos);
 
-    // Проверка по допустимому току с учетом коэффициентов
-    const idopBase = getIdopBase(seg);
+    const idopBase = getIdopBaseForSection(seg, seg.s);
     const kTotal = getTotalK(seg);
     const idopSingle = idopBase * kTotal;
     const idopTotal = idopSingle * seg.n;
     const loadPct = (Ip / idopTotal) * 100;
     const isOverloaded = Ip > idopTotal;
     const recS = findMinSection(seg, Ip);
+    const modeObj = LAY_MODES[seg.layMode] || LAY_MODES.pipe_090;
 
-    // Температурный коэффициент для r0
     let kTemp = 1.0;
     if (tempMode === 'work') {
       kTemp = seg.cableType === 'xlpe' || seg.cableType === 'sip' ? 1.28 : 1.20;
     }
 
-    const phaseMult = uNom === 0.23 ? 2 : 1; // для 1-фазной сети фаза + ноль
+    const phaseMult = uNom === 0.23 ? 2 : 1;
     const R = (seg.r0 * kTemp * (seg.L / 1000) / seg.n) * phaseMult;
     const X = (seg.x0 * (seg.L / 1000) / seg.n) * phaseMult;
 
@@ -376,17 +389,23 @@ function renderAll() {
     const uEndVolt = uNom * 1000 - sumDuVolt;
     const isDuOk = sumDuPct <= duLimit;
 
-    // Формируем выпадающий список сечений с индикацией допустимого тока
+    // Выпадающий список сечений с индикацией допустимого тока
     const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
     const matTbl = grp[seg.mat] || grp.Al;
     let sectionOptions = '';
     SECTIONS.forEach(sVal => {
       if (!matTbl[sVal]) return;
-      const base = (seg.cableType === 'sip' || seg.layMode === 'air') ? matTbl[sVal][1] : matTbl[sVal][0];
+      const base = getIdopBaseForSection(seg, sVal);
       const maxI = Math.round(base * kTotal * seg.n);
       const pass = maxI >= Ip;
       const mark = pass ? '✅' : '❌';
       sectionOptions += `<option value="${sVal}" ${seg.s === sVal ? 'selected' : ''}>${mark} ${sVal} мм² (до ${maxI} А)</option>`;
+    });
+
+    // Выпадающий список способов прокладки
+    let layModeOptions = '';
+    Object.keys(LAY_MODES).forEach(key => {
+      layModeOptions += `<option value="${key}" ${seg.layMode === key ? 'selected' : ''}>${LAY_MODES[key].label}</option>`;
     });
 
     html += `
@@ -399,7 +418,6 @@ function renderAll() {
       <div class="seg-layout">
         <!-- ЛЕВАЯ КОЛОНКА: ВВОД ДАННЫХ -->
         <div>
-          <!-- Нагрузка и узлы -->
           <div class="sub-box">
             <div class="grid-2" style="margin-bottom:10px;">
               <div>
@@ -427,7 +445,6 @@ function renderAll() {
             </div>
           </div>
 
-          <!-- Параметры кабеля и условия прокладки -->
           <div class="sub-box" style="margin-bottom:0;">
             <div class="section-title" style="margin-bottom:8px;">
               <span>Параметры кабеля / провода</span>
@@ -449,6 +466,19 @@ function renderAll() {
 
             <div class="grid-2" style="margin-bottom:10px;">
               <div>
+                <label>Способ прокладки</label>
+                <select onchange="updateSeg(${i}, 'layMode', this.value)" ${seg.cableType==='sip'?'disabled':''}>
+                  ${layModeOptions}
+                </select>
+              </div>
+              <div>
+                <label>k трубы / прокладки (можно менять)</label>
+                <input type="number" step="0.01" min="0.5" max="1.2" value="${seg.kPipe}" oninput="updateSeg(${i}, 'kPipe', this.value)" ${seg.cableType==='sip'?'disabled':''}>
+              </div>
+            </div>
+
+            <div class="grid-3" style="margin-bottom:10px;">
+              <div>
                 <label>Материал жил</label>
                 <div class="segmented">
                   <button type="button" class="${seg.mat==='Al'?'active':''}" onclick="updateSeg(${i}, 'mat', 'Al')">Al (Алюм.)</button>
@@ -456,33 +486,22 @@ function renderAll() {
                 </div>
               </div>
               <div>
-                <label>Способ прокладки</label>
-                <select onchange="updateSeg(${i}, 'layMode', this.value)" ${seg.cableType==='sip'?'disabled':''}>
-                  <option value="trench" ${seg.layMode==='trench'?'selected':''}>В земле (траншея)</option>
-                  <option value="pipe" ${seg.layMode==='pipe'?'selected':''}>В трубе ПНД / ГНБ (k=0,88)</option>
-                  <option value="air" ${seg.layMode==='air'?'selected':''}>На воздухе / в лотке</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid-2" style="margin-bottom:10px;">
-              <div>
-                <label>Кабелей рядом в траншее (k₁)</label>
+                <label>Кабелей рядом (k₁)</label>
                 <select onchange="updateSeg(${i}, 'kGroup', this.value)" ${seg.cableType==='sip'?'disabled':''}>
-                  <option value="1.0" ${seg.kGroup==1.0?'selected':''}>1 кабель (k₁ = 1,00)</option>
-                  <option value="0.9" ${seg.kGroup==0.9?'selected':''}>2 кабеля (k₁ = 0,90)</option>
-                  <option value="0.85" ${seg.kGroup==0.85?'selected':''}>3 кабеля (k₁ = 0,85)</option>
-                  <option value="0.8" ${seg.kGroup==0.8?'selected':''}>4 кабеля (k₁ = 0,80)</option>
-                  <option value="0.75" ${seg.kGroup==0.75?'selected':''}>6 кабелей (k₁ = 0,75)</option>
+                  <option value="1.0" ${seg.kGroup==1.0?'selected':''}>1 шт. (k₁ = 1,00)</option>
+                  <option value="0.9" ${seg.kGroup==0.9?'selected':''}>2 шт. (k₁ = 0,90)</option>
+                  <option value="0.85" ${seg.kGroup==0.85?'selected':''}>3 шт. (k₁ = 0,85)</option>
+                  <option value="0.8" ${seg.kGroup==0.8?'selected':''}>4 шт. (k₁ = 0,80)</option>
+                  <option value="0.75" ${seg.kGroup==0.75?'selected':''}>6 шт. (k₁ = 0,75)</option>
                 </select>
               </div>
               <div>
                 <label>Кабелей в фазе n</label>
                 <select onchange="updateSeg(${i}, 'n', this.value)">
                   <option value="1" ${seg.n===1?'selected':''}>1 шт.</option>
-                  <option value="2" ${seg.n===2?'selected':''}>2 шт. (параллельно)</option>
-                  <option value="3" ${seg.n===3?'selected':''}>3 шт. (параллельно)</option>
-                  <option value="4" ${seg.n===4?'selected':''}>4 шт. (параллельно)</option>
+                  <option value="2" ${seg.n===2?'selected':''}>2 шт. (паралл.)</option>
+                  <option value="3" ${seg.n===3?'selected':''}>3 шт. (паралл.)</option>
+                  <option value="4" ${seg.n===4?'selected':''}>4 шт. (паралл.)</option>
                 </select>
               </div>
             </div>
@@ -525,7 +544,7 @@ function renderAll() {
               </div>
             ` : `
               <div class="ok-alert">
-                <span>✅ По току проходит: <b>Iр = ${Ip.toFixed(1)} А ≤ Iдоп = ${idopTotal.toFixed(0)} А</b> (Kпопр = ${kTotal})</span>
+                <span>✅ По току проходит: <b>Iр = ${Ip.toFixed(1)} А ≤ Iдоп = ${idopTotal.toFixed(0)} А</b> (табл. ${idopBase} А × Kпопр ${kTotal})</span>
                 <b>Загрузка: ${loadPct.toFixed(0)}%</b>
               </div>
             `}
@@ -539,7 +558,7 @@ function renderAll() {
               <span class="lock-badge">РАСЧЕТ ПОТЕРЬ ЗАБЛОКИРОВАН</span>
               <div style="font-weight:700; color:#0f172a; margin-bottom:6px;">Выбранное сечение ${seg.s} мм² перегружено по току!</div>
               <div style="font-size:0.84rem; color:#475569; margin-bottom:10px;">
-                Чтобы продолжить расчет потерь напряжения, сначала выберите сечение кабеля, удовлетворяющее пропускной способности (Iр ≤ Iдоп).
+                Чтобы продолжить расчет потерь напряжения, сначала выберите сечение кабеля, удовлетворяющее пропускной способности (Iр ≤ Iдоп.расч).
               </div>
               ${recS ? `<button class="btn btn-primary btn-sm" onclick="applyRecommendedSection(${i}, ${recS})">Выбрать ${recS} мм² и разблокировать</button>` : ''}
             </div>
@@ -583,6 +602,7 @@ function renderAll() {
         <td>${i + 1}</td>
         <td>${seg.from} → ${seg.to}</td>
         <td>${cableLabel}</td>
+        <td>${seg.cableType==='sip' ? 'Воздух (СИП)' : modeObj.short}</td>
         <td>${seg.L}</td>
         <td>${seg.P} кВт / ${cos}</td>
         <td>${Ip.toFixed(1)} / ${idopTotal.toFixed(0)} А</td>
@@ -593,7 +613,7 @@ function renderAll() {
       </tr>`;
 
     reportLines.push(
-      `Участок №${i+1} (${seg.from} -> ${seg.to}): L = ${seg.L} м, кабель ${cableLabel}, P = ${seg.P} кВт, cos φ = ${cos}, Q = ${Q.toFixed(2)} квар.\n` +
+      `Участок №${i+1} (${seg.from} -> ${seg.to}): L = ${seg.L} м, кабель ${cableLabel} (${seg.cableType==='sip' ? 'Воздух' : modeObj.short}), P = ${seg.P} кВт, cos φ = ${cos}, Q = ${Q.toFixed(2)} квар.\n` +
       `  Расчетный ток: Iр = ${Ip.toFixed(1)} А ≤ Iдоп.расч = ${idopBase} × ${kTotal} × ${seg.n} = ${idopTotal.toFixed(0)} А (загрузка ${loadPct.toFixed(0)}%).\n` +
       `  Сопротивления: R = ${R.toFixed(4)} Ом, X = ${X.toFixed(4)} Ом.\n` +
       `  Потеря напряжения: ΔU${i+1} = (${seg.P}×${R.toFixed(4)} + ${Q.toFixed(2)}×${X.toFixed(4)}) / (10×${uNom}²) = ${duPct.toFixed(2)}% (${duVolt.toFixed(1)} В). Суммарно ΔUΣ = ${sumDuPct.toFixed(2)}%.`
