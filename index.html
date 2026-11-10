@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор потерь напряжения и выбора кабеля 0,4–10 кВ</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --warning: #d97706;
+      --warning-bg: #fef3c7;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); line-height: 1.45; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    h1 { font-size: 1.4rem; margin: 0 0 14px 0; color: #0f172a; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+      .seg-layout { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 480px) {
+      .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+    label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+    input, select { width: 100%; padding: 9px 11px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #fff; color: var(--text); }
+    input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.15); }
+    .segmented { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; }
+    .segmented button { flex: 1; border: none; background: transparent; padding: 7px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; color: #475569; cursor: pointer; transition: 0.15s; }
+    .segmented button.active { background: #fff; color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+    .info-pill { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.83rem; color: #334155; margin-top: 10px; }
+    .seg-layout { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; align-items: start; }
+    .sub-box { border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fcfcfd; }
+    .overload-alert { background: var(--danger-bg); border: 1px solid #f87171; color: #991b1b; padding: 12px; border-radius: 9px; margin-top: 10px; font-size: 0.88rem; }
+    .overload-alert strong { display: block; margin-bottom: 4px; font-size: 0.93rem; }
+    .ok-alert { background: var(--success-bg); border: 1px solid #86efac; color: #166534; padding: 9px 12px; border-radius: 8px; margin-top: 10px; font-size: 0.84rem; display: flex; justify-content: space-between; align-items: center; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.15s; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-outline { background: #fff; border: 1px solid #cbd5e1; color: var(--text); }
+    .btn-outline:hover { background: #f1f5f9; }
+    .btn-sm { padding: 6px 10px; font-size: 0.8rem; margin-top: 8px; }
+    .btn-danger-fix { background: var(--danger); color: #fff; }
+    .result-panel { border: 1px solid var(--border); border-radius: 10px; padding: 15px; background: #f8fafc; position: relative; overflow: hidden; }
+    .result-panel.blocked .calc-content { filter: blur(5px); pointer-events: none; user-select: none; opacity: 0.35; }
+    .lock-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: rgba(255,255,255,0.78); z-index: 5; }
+    .lock-badge { background: var(--danger); color: #fff; padding: 6px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
+    .formula-box { background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 10px; font-family: ui-monospace, monospace; font-size: 0.82rem; margin: 10px 0; overflow-x: auto; }
+    .big-num { font-size: 1.55rem; font-weight: 800; }
+    .status-tag { display: inline-block; padding: 4px 9px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; }
+    .status-ok { background: var(--success-bg); color: var(--success); }
+    .status-bad { background: var(--danger-bg); color: var(--danger); }
+    .toggle-row { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--primary); font-weight: 600; cursor: pointer; }
+    .toggle-row input { width: auto; margin: 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; color: #334155; }
+    textarea { width: 100%; min-height: 150px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-family: ui-monospace, monospace; font-size: 0.83rem; resize: vertical; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>⚡ Калькулятор потерь напряжения и выбора сечения 0,4–10 кВ</h1>
+
+  <!-- ШАПКА НАСТРОЕК ПРОЕКТА -->
+  <div class="card">
+    <div class="section-title">1. Общие параметры сети</div>
+    <div class="grid-4">
+      <div>
+        <label>Наименование линии / объекта</label>
+        <input type="text" id="projName" value="КЛ-0,4 кВ от ТП-1 до ВРУ" oninput="renderAll()">
+      </div>
+      <div>
+        <label>Номинальное напряжение Uном</label>
+        <select id="uNom" onchange="onVoltageChange()">
+          <option value="0.4" selected>0,4 кВ (3 фазы)</option>
+          <option value="0.23">0,23 кВ (1 фаза)</option>
+          <option value="6">6 кВ (3 фазы)</option>
+          <option value="10">10 кВ (3 фазы)</option>
+        </select>
+      </div>
+      <div>
+        <label>Допустимая потеря ΔUдоп, %</label>
+        <input type="number" id="duLimit" value="5.0" step="0.5" min="0.5" max="20" oninput="renderAll()">
+      </div>
+      <div>
+        <label>Температура жилы для r₀</label>
+        <select id="tempMode" onchange="renderAll()">
+          <option value="20" selected>+20 °C (стандарт ГОСТ)</option>
+          <option value="work">Рабочая (+70°C ПВХ / +90°C СПЭ)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- КОНТЕЙНЕР УЧАСТКОВ -->
+  <div id="segmentsContainer"></div>
+
+  <div style="margin-bottom: 20px;">
+    <button class="btn btn-primary" onclick="addSegment()">➕ Добавить следующий участок</button>
+  </div>
+
+  <!-- СВОДНАЯ ТАБЛИЦА И ОТЧЕТ ДЛЯ ПЗ -->
+  <div class="card">
+    <div class="section-title">Сводная ведомость расчета по участкам</div>
+    <div style="overflow-x:auto;">
+      <table id="summaryTable">
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Участок</th>
+            <th>Кабель / Провод</th>
+            <th>L, м</th>
+            <th>P, кВт / cos φ</th>
+            <th>Iр / Iдоп.расч, А</th>
+            <th>R / X, Ом</th>
+            <th>ΔU уч., % (В)</th>
+            <th>ΔU Σ, %</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="section-title" style="margin-top:16px;">
+      <span>Готовый расчет для вставки в Пояснительную записку (ПЗ)</span>
+      <button class="btn btn-outline btn-sm" style="margin:0;" onclick="copyReport()">📋 Скопировать текст</button>
+    </div>
+    <textarea id="pzReport" readonly></textarea>
+  </div>
+</div>
+
+<script>
+// Справочник сечений: r0 (Ом/км при 20°C) и допустимые токи (Земля / Воздух) по ПУЭ и ГОСТ
+const SECTIONS = [4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300, 400];
+
+const R0_TABLE = {
+  Al: { 4:7.41, 6:4.61, 10:3.08, 16:1.91, 25:1.20, 35:0.868, 50:0.641, 70:0.443, 95:0.320, 120:0.253, 150:0.206, 185:0.164, 240:0.125, 300:0.100, 400:0.0778 },
+  Cu: { 4:4.61, 6:3.08, 10:1.83, 16:1.15, 25:0.727, 35:0.524, 50:0.387, 70:0.268, 95:0.193, 120:0.153, 150:0.124, 185:0.0991, 240:0.0754, 300:0.0601, 400:0.0470 }
+};
+
+// Базовые длительно допустимые токи Iдоп (А) для 0,4-10 кВ: [Земля, Воздух]
+const IDOP_TABLE = {
+  pvc: { // ПВХ изоляция (АВБШв, ВБШв, АВВГ, ВВГ)
+    Al: { 4:[32,24], 6:[40,31], 10:[55,42], 16:[75,56], 25:[95,73], 35:[115,89], 50:[140,108], 70:[175,135], 95:[210,164], 120:[240,189], 150:[275,217], 185:[310,248], 240:[360,292], 300:[410,335], 400:[470,390] },
+    Cu: { 4:[42,32], 6:[53,40], 10:[71,55], 16:[95,73], 25:[120,95], 35:[145,115], 50:[175,140], 70:[220,175], 95:[265,215], 120:[300,245], 150:[340,280], 185:[385,320], 240:[450,375], 300:[510,430], 400:[580,500] }
+  },
+  xlpe: { // СПЭ изоляция (АПвБШп, ПвБШп, АПвПу, ПвПу)
+    Al: { 4:[38,29], 6:[47,37], 10:[65,50], 16:[88,67], 25:[115,88], 35:[138,106], 50:[165,129], 70:[205,161], 95:[245,196], 120:[280,226], 150:[320,260], 185:[362,297], 240:[422,350], 300:[480,400], 400:[550,465] },
+    Cu: { 4:[49,38], 6:[62,48], 10:[83,65], 16:[110,87], 25:[142,113], 35:[172,138], 50:[208,168], 70:[258,210], 95:[310,255], 120:[352,293], 150:[400,335], 185:[452,382], 240:[528,448], 300:[600,510], 400:[685,590] }
+  },
+  bpi: { // Бумажная пропитанная изоляция 6/10 кВ (АСБ, АСБ2л, ЦАСБ)
+    Al: { 16:[65,50], 25:[85,65], 35:[105,80], 50:[130,100], 70:[165,125], 95:[200,155], 120:[230,180], 150:[265,205], 185:[300,235], 240:[350,275] },
+    Cu: { 16:[85,65], 25:[110,85], 35:[135,105], 50:[165,130], 70:[210,165], 95:[255,200], 120:[295,230], 150:[340,265], 185:[385,305], 240:[450,355] }
+  },
+  sip: { // СИП-2 / СИП-3 / СИП-4 (только воздух)
+    Al: { 16:[95,95], 25:[125,125], 35:[155,155], 50:[190,190], 70:[240,240], 95:[295,295], 120:[340,340], 150:[390,390], 185:[445,445], 240:[525,525] },
+    Cu: { 16:[115,115], 25:[150,150], 35:[185,185], 50:[230,230], 70:[290,290], 95:[355,355], 120:[410,410] }
+  }
+};
+
+function getDefaultX0(cableType, s) {
+  if (cableType === 'sip') return 0.088;
+  if (cableType === 'bpi') return s <= 50 ? 0.095 : (s <= 120 ? 0.083 : 0.078);
+  if (s <= 25) return 0.086;
+  if (s <= 70) return 0.079;
+  if (s <= 150) return 0.075;
+  return 0.072;
+}
+
+let segments = [
+  {
+    from: "РУ-0,4 кВ ТП-1",
+    to: "ВРУ-1",
+    P: 150,
+    cosPhi: 0.96,
+    cableType: "pvc",
+    mat: "Al",
+    s: 120,
+    n: 1,
+    L: 180,
+    layMode: "trench", // trench | pipe | air
+    kGroup: 1.0,       // поправка на число кабелей в траншее
+    kExtra: 1.0,       // доп. коэффициент (температура/грунт)
+    autoSize: false,
+    r0: 0.253,
+    x0: 0.075
+  }
+];
+
+function onVoltageChange() {
+  const u = parseFloat(document.getElementById('uNom').value);
+  const duInput = document.getElementById('duLimit');
+  if (u >= 6) duInput.value = "2.0";
+  else duInput.value = "5.0";
+  renderAll();
+}
+
+function getIdopBase(seg) {
+  const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
+  const matTbl = grp[seg.mat] || grp.Al;
+  const pair = matTbl[seg.s] || [200, 160];
+  if (seg.cableType === 'sip') return pair[1];
+  return seg.layMode === 'air' ? pair[1] : pair[0];
+}
+
+function getTotalK(seg) {
+  if (seg.cableType === 'sip') return seg.kExtra;
+  const kPipe = seg.layMode === 'pipe' ? 0.88 : 1.0; // снижение в трубе ПНД/ГНБ
+  return +(kPipe * seg.kGroup * seg.kExtra).toFixed(3);
+}
+
+function calcIp(P, cosPhi) {
+  const uNom = parseFloat(document.getElementById('uNom').value);
+  if (uNom === 0.23) {
+    return P / (0.23 * cosPhi);
+  }
+  return P / (Math.sqrt(3) * uNom * cosPhi);
+}
+
+function findMinSection(seg, Ip) {
+  const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
+  const matTbl = grp[seg.mat] || grp.Al;
+  const kTotal = getTotalK(seg);
+  for (let s of SECTIONS) {
+    if (!matTbl[s]) continue;
+    const base = (seg.cableType === 'sip' || seg.layMode === 'air') ? matTbl[s][1] : matTbl[s][0];
+    const idopCalc = base * seg.n * kTotal;
+    if (idopCalc >= Ip) return s;
+  }
+  return null;
+}
+
+function syncLookup(idx) {
+  const seg = segments[idx];
+  const rTbl = R0_TABLE[seg.mat] || R0_TABLE.Al;
+  if (rTbl[seg.s]) seg.r0 = rTbl[seg.s];
+  seg.x0 = getDefaultX0(seg.cableType, seg.s);
+}
+
+function updateSeg(idx, field, val) {
+  const seg = segments[idx];
+  if (['P','cosPhi','L','r0','x0','kGroup','kExtra'].includes(field)) {
+    seg[field] = parseFloat(val) || 0;
+  } else if (['s','n'].includes(field)) {
+    seg[field] = parseInt(val, 10) || 1;
+  } else {
+    seg[field] = val;
+  }
+
+  // Если выбрали n > 1 и kGroup был 1.0, подскажем коэффициент параллельной прокладки
+  if (field === 'n' && seg.n >= 2 && seg.kGroup === 1.0) {
+    seg.kGroup = seg.n === 2 ? 0.90 : (seg.n === 3 ? 0.85 : 0.80);
+  }
+
+  if (['cableType','mat','s'].includes(field)) {
+    syncLookup(idx);
+  }
+
+  // Если включен автоподбор сечения по току
+  if (seg.autoSize && field !== 's' && field !== 'r0' && field !== 'x0') {
+    const Ip = calcIp(seg.P, seg.cosPhi || 0.9);
+    const bestS = findMinSection(seg, Ip);
+    if (bestS && bestS !== seg.s) {
+      seg.s = bestS;
+      syncLookup(idx);
+    }
+  }
+
+  // Синхронизация узла "Откуда" следующего участка
+  if (field === 'to' && segments[idx + 1]) {
+    segments[idx + 1].from = seg.to;
+  }
+
+  renderAll();
+}
+
+function applyRecommendedSection(idx, recS) {
+  segments[idx].s = recS;
+  syncLookup(idx);
+  renderAll();
+}
+
+function addSegment() {
+  const prev = segments[segments.length - 1];
+  segments.push({
+    from: prev.to || `Узел ${segments.length}`,
+    to: `Потребитель ${segments.length + 1}`,
+    P: prev.P,
+    cosPhi: prev.cosPhi,
+    cableType: prev.cableType,
+    mat: prev.mat,
+    s: prev.s,
+    n: prev.n,
+    L: 100,
+    layMode: prev.layMode,
+    kGroup: prev.kGroup,
+    kExtra: prev.kExtra,
+    autoSize: prev.autoSize,
+    r0: prev.r0,
+    x0: prev.x0
+  });
+  renderAll();
+}
+
+function removeSegment(idx) {
+  if (segments.length <= 1) return;
+  segments.splice(idx, 1);
+  renderAll();
+}
+
+function renderAll() {
+  const container = document.getElementById('segmentsContainer');
+  const uNom = parseFloat(document.getElementById('uNom').value);
+  const duLimit = parseFloat(document.getElementById('duLimit').value) || 5.0;
+  const tempMode = document.getElementById('tempMode').value;
+
+  let html = '';
+  let sumDuPct = 0;
+  let sumDuVolt = 0;
+  let tableRows = '';
+  let reportLines = [];
+  const projName = document.getElementById('projName').value;
+
+  reportLines.push(`РАСЧЕТ ПОТЕРЬ НАПРЯЖЕНИЯ И ПРОВЕРКА СЕЧЕНИЯ ПО ТОКУ`);
+  reportLines.push(`Объект: ${projName} | Uном = ${uNom} кВ | Допустимая потеря ΔUдоп = ${duLimit}%`);
+  reportLines.push(`--------------------------------------------------------------------------------`);
+
+  segments.forEach((seg, i) => {
+    const cos = Math.min(Math.max(seg.cosPhi || 0.9, 0.1), 1.0);
+    const tg = Math.tan(Math.acos(cos));
+    const Q = seg.P * tg;
+    const Ip = calcIp(seg.P, cos);
+
+    // Проверка по допустимому току с учетом коэффициентов
+    const idopBase = getIdopBase(seg);
+    const kTotal = getTotalK(seg);
+    const idopSingle = idopBase * kTotal;
+    const idopTotal = idopSingle * seg.n;
+    const loadPct = (Ip / idopTotal) * 100;
+    const isOverloaded = Ip > idopTotal;
+    const recS = findMinSection(seg, Ip);
+
+    // Температурный коэффициент для r0
+    let kTemp = 1.0;
+    if (tempMode === 'work') {
+      kTemp = seg.cableType === 'xlpe' || seg.cableType === 'sip' ? 1.28 : 1.20;
+    }
+
+    const phaseMult = uNom === 0.23 ? 2 : 1; // для 1-фазной сети фаза + ноль
+    const R = (seg.r0 * kTemp * (seg.L / 1000) / seg.n) * phaseMult;
+    const X = (seg.x0 * (seg.L / 1000) / seg.n) * phaseMult;
+
+    const duPct = (seg.P * R + Q * X) / (10 * uNom * uNom);
+    const duVolt = (duPct / 100) * (uNom * 1000);
+
+    if (!isOverloaded) {
+      sumDuPct += duPct;
+      sumDuVolt += duVolt;
+    }
+    const uEndVolt = uNom * 1000 - sumDuVolt;
+    const isDuOk = sumDuPct <= duLimit;
+
+    // Формируем выпадающий список сечений с индикацией допустимого тока
+    const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
+    const matTbl = grp[seg.mat] || grp.Al;
+    let sectionOptions = '';
+    SECTIONS.forEach(sVal => {
+      if (!matTbl[sVal]) return;
+      const base = (seg.cableType === 'sip' || seg.layMode === 'air') ? matTbl[sVal][1] : matTbl[sVal][0];
+      const maxI = Math.round(base * kTotal * seg.n);
+      const pass = maxI >= Ip;
+      const mark = pass ? '✅' : '❌';
+      sectionOptions += `<option value="${sVal}" ${seg.s === sVal ? 'selected' : ''}>${mark} ${sVal} мм² (до ${maxI} А)</option>`;
+    });
+
+    html += `
+    <div class="card">
+      <div class="section-title">
+        <span>Участок №${i + 1}: ${seg.from} → ${seg.to}</span>
+        ${segments.length > 1 ? `<button class="btn btn-outline btn-sm" style="margin:0;color:#dc2626;" onclick="removeSegment(${i})">✕ Удалить участок</button>` : ''}
+      </div>
+
+      <div class="seg-layout">
+        <!-- ЛЕВАЯ КОЛОНКА: ВВОД ДАННЫХ -->
+        <div>
+          <!-- Нагрузка и узлы -->
+          <div class="sub-box">
+            <div class="grid-2" style="margin-bottom:10px;">
+              <div>
+                <label>Начало участка (Откуда)</label>
+                <input type="text" value="${seg.from}" onchange="updateSeg(${i}, 'from', this.value)">
+              </div>
+              <div>
+                <label>Конец участка (Куда)</label>
+                <input type="text" value="${seg.to}" onchange="updateSeg(${i}, 'to', this.value)">
+              </div>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label>Активная мощность P, кВт</label>
+                <input type="number" step="1" value="${seg.P}" oninput="updateSeg(${i}, 'P', this.value)">
+              </div>
+              <div>
+                <label>Коэф. мощности cos φ</label>
+                <input type="number" step="0.01" min="0.3" max="1.0" value="${seg.cosPhi}" oninput="updateSeg(${i}, 'cosPhi', this.value)">
+              </div>
+            </div>
+            <div class="info-pill">
+              P = ${seg.P.toFixed(2)} кВт | Q = ${Q.toFixed(2)} квар<br>
+              <strong>Iр = ${Ip.toFixed(1)} А</strong> | tg φ = ${tg.toFixed(2)}
+            </div>
+          </div>
+
+          <!-- Параметры кабеля и условия прокладки -->
+          <div class="sub-box" style="margin-bottom:0;">
+            <div class="section-title" style="margin-bottom:8px;">
+              <span>Параметры кабеля / провода</span>
+              <label class="toggle-row">
+                <input type="checkbox" ${seg.autoSize ? 'checked' : ''} onchange="updateSeg(${i}, 'autoSize', this.checked)">
+                ⚡ Автоподбор по току
+              </label>
+            </div>
+
+            <div style="margin-bottom:10px;">
+              <label>Группа кабеля / изоляция</label>
+              <select onchange="updateSeg(${i}, 'cableType', this.value)">
+                <option value="pvc" ${seg.cableType==='pvc'?'selected':''}>КЛ ПВХ многожильный (АВБШв, ВБШв, АВВГ, ВВГ)</option>
+                <option value="xlpe" ${seg.cableType==='xlpe'?'selected':''}>КЛ СПЭ изоляция (АПвБШп, ПвБШп, АПвПу, ПвПу)</option>
+                <option value="bpi" ${seg.cableType==='bpi'?'selected':''}>КЛ 6–10 кВ БПИ (АСБ, АСБ2л, ЦАСБ)</option>
+                <option value="sip" ${seg.cableType==='sip'?'selected':''}>ВЛ провод СИП (СИП-2, СИП-3, СИП-4)</option>
+              </select>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:10px;">
+              <div>
+                <label>Материал жил</label>
+                <div class="segmented">
+                  <button type="button" class="${seg.mat==='Al'?'active':''}" onclick="updateSeg(${i}, 'mat', 'Al')">Al (Алюм.)</button>
+                  <button type="button" class="${seg.mat==='Cu'?'active':''}" onclick="updateSeg(${i}, 'mat', 'Cu')">Cu (Медь)</button>
+                </div>
+              </div>
+              <div>
+                <label>Способ прокладки</label>
+                <select onchange="updateSeg(${i}, 'layMode', this.value)" ${seg.cableType==='sip'?'disabled':''}>
+                  <option value="trench" ${seg.layMode==='trench'?'selected':''}>В земле (траншея)</option>
+                  <option value="pipe" ${seg.layMode==='pipe'?'selected':''}>В трубе ПНД / ГНБ (k=0,88)</option>
+                  <option value="air" ${seg.layMode==='air'?'selected':''}>На воздухе / в лотке</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:10px;">
+              <div>
+                <label>Кабелей рядом в траншее (k₁)</label>
+                <select onchange="updateSeg(${i}, 'kGroup', this.value)" ${seg.cableType==='sip'?'disabled':''}>
+                  <option value="1.0" ${seg.kGroup==1.0?'selected':''}>1 кабель (k₁ = 1,00)</option>
+                  <option value="0.9" ${seg.kGroup==0.9?'selected':''}>2 кабеля (k₁ = 0,90)</option>
+                  <option value="0.85" ${seg.kGroup==0.85?'selected':''}>3 кабеля (k₁ = 0,85)</option>
+                  <option value="0.8" ${seg.kGroup==0.8?'selected':''}>4 кабеля (k₁ = 0,80)</option>
+                  <option value="0.75" ${seg.kGroup==0.75?'selected':''}>6 кабелей (k₁ = 0,75)</option>
+                </select>
+              </div>
+              <div>
+                <label>Кабелей в фазе n</label>
+                <select onchange="updateSeg(${i}, 'n', this.value)">
+                  <option value="1" ${seg.n===1?'selected':''}>1 шт.</option>
+                  <option value="2" ${seg.n===2?'selected':''}>2 шт. (параллельно)</option>
+                  <option value="3" ${seg.n===3?'selected':''}>3 шт. (параллельно)</option>
+                  <option value="4" ${seg.n===4?'selected':''}>4 шт. (параллельно)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2" style="margin-bottom:10px;">
+              <div>
+                <label>Сечение S (с проверкой по Iдоп)</label>
+                <select onchange="updateSeg(${i}, 's', this.value)">
+                  ${sectionOptions}
+                </select>
+              </div>
+              <div>
+                <label>Длина участка L, м</label>
+                <input type="number" step="5" value="${seg.L}" oninput="updateSeg(${i}, 'L', this.value)">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>r₀, Ом/км</label>
+                <input type="number" step="0.001" value="${seg.r0}" oninput="updateSeg(${i}, 'r0', this.value)">
+              </div>
+              <div>
+                <label>x₀, Ом/км</label>
+                <input type="number" step="0.001" value="${seg.x0}" oninput="updateSeg(${i}, 'x0', this.value)">
+              </div>
+            </div>
+
+            <!-- БЛОК ПРОВЕРКИ СЕЧЕНИЯ ПО ТОКУ -->
+            ${isOverloaded ? `
+              <div class="overload-alert">
+                <strong>⚠️ Сечение ${seg.n > 1 ? seg.n + '×' : ''}${seg.s} мм² не проходит по длительно допустимому току!</strong>
+                Расчетный ток <b>Iр = ${Ip.toFixed(1)} А</b> превышает допустимый <b>Iдоп.расч = ${idopTotal.toFixed(0)} А</b>
+                (табл. ${idopBase} А × Kпопр ${kTotal} × n=${seg.n}). Загрузка: <b>${loadPct.toFixed(0)}%</b>.<br>
+                ${recS ? `
+                  <button class="btn btn-danger-fix btn-sm" onclick="applyRecommendedSection(${i}, ${recS})">
+                    ✅ Заменить на подходящее сечение: ${seg.n > 1 ? seg.n + '×' : ''}${recS} мм²
+                  </button>
+                ` : `<span>Увеличьте число параллельных кабелей в фазе (n) или перейдите на медь (Cu).</span>`}
+              </div>
+            ` : `
+              <div class="ok-alert">
+                <span>✅ По току проходит: <b>Iр = ${Ip.toFixed(1)} А ≤ Iдоп = ${idopTotal.toFixed(0)} А</b> (Kпопр = ${kTotal})</span>
+                <b>Загрузка: ${loadPct.toFixed(0)}%</b>
+              </div>
+            `}
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: РЕЗУЛЬТАТ РАСЧЕТА ПОТЕРЬ -->
+        <div class="result-panel ${isOverloaded ? 'blocked' : ''}">
+          ${isOverloaded ? `
+            <div class="lock-overlay">
+              <span class="lock-badge">РАСЧЕТ ПОТЕРЬ ЗАБЛОКИРОВАН</span>
+              <div style="font-weight:700; color:#0f172a; margin-bottom:6px;">Выбранное сечение ${seg.s} мм² перегружено по току!</div>
+              <div style="font-size:0.84rem; color:#475569; margin-bottom:10px;">
+                Чтобы продолжить расчет потерь напряжения, сначала выберите сечение кабеля, удовлетворяющее пропускной способности (Iр ≤ Iдоп).
+              </div>
+              ${recS ? `<button class="btn btn-primary btn-sm" onclick="applyRecommendedSection(${i}, ${recS})">Выбрать ${recS} мм² и разблокировать</button>` : ''}
+            </div>
+          ` : ''}
+
+          <div class="calc-content">
+            <div class="section-title">Результаты по участку №${i + 1}</div>
+            <div class="grid-2" style="margin-bottom:8px;">
+              <div>
+                <div style="font-size:0.78rem; color:var(--muted);">Потеря на участке ΔU${i+1}</div>
+                <div class="big-num" style="color:var(--primary);">${duPct.toFixed(2)} %</div>
+                <div style="font-size:0.83rem; color:var(--muted);">${duVolt.toFixed(1)} В</div>
+              </div>
+              <div>
+                <div style="font-size:0.78rem; color:var(--muted);">Накопленная потеря ΔUΣ</div>
+                <div class="big-num" style="color:${isDuOk ? 'var(--success)' : 'var(--danger)'};">${sumDuPct.toFixed(2)} %</div>
+                <div style="font-size:0.83rem;">Uкон = <b>${uEndVolt.toFixed(1)} В</b></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:10px;">
+              <span class="status-tag ${isDuOk ? 'status-ok' : 'status-bad'}">
+                ${isDuOk ? `✓ В НОРМЕ (≤ ${duLimit}%)` : `✕ ПРЕВЫШЕНИЕ УСТАВКИ (> ${duLimit}%)`}
+              </span>
+            </div>
+
+            <div class="formula-box">
+              R = (${(seg.r0*kTemp).toFixed(3)} × ${(seg.L/1000).toFixed(3)}) / ${seg.n} = <b>${R.toFixed(4)} Ом</b><br>
+              X = (${seg.x0.toFixed(3)} × ${(seg.L/1000).toFixed(3)}) / ${seg.n} = <b>${X.toFixed(4)} Ом</b><br><br>
+              ΔU% = (P·R + Q·X) / (10·Uном²) =<br>
+              = (${seg.P.toFixed(1)}·${R.toFixed(4)} + ${Q.toFixed(1)}·${X.toFixed(4)}) / (10·${uNom}²) = <b>${duPct.toFixed(2)} %</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+    const cableLabel = `${seg.mat} ${seg.n>1 ? seg.n+'×' : ''}${seg.s} мм²`;
+    tableRows += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${seg.from} → ${seg.to}</td>
+        <td>${cableLabel}</td>
+        <td>${seg.L}</td>
+        <td>${seg.P} кВт / ${cos}</td>
+        <td>${Ip.toFixed(1)} / ${idopTotal.toFixed(0)} А</td>
+        <td>${R.toFixed(4)} / ${X.toFixed(4)}</td>
+        <td>${isOverloaded ? '—' : `${duPct.toFixed(2)}% (${duVolt.toFixed(1)} В)`}</td>
+        <td><b>${isOverloaded ? 'Перегруз по I!' : `${sumDuPct.toFixed(2)}%`}</b></td>
+        <td>${isOverloaded ? '<span style="color:#dc2626;font-weight:700;">Мало сечение по току</span>' : (isDuOk ? '<span style="color:#16a34a;font-weight:700;">Норма</span>' : '<span style="color:#dc2626;font-weight:700;">Превышение ΔU</span>')}</td>
+      </tr>`;
+
+    reportLines.push(
+      `Участок №${i+1} (${seg.from} -> ${seg.to}): L = ${seg.L} м, кабель ${cableLabel}, P = ${seg.P} кВт, cos φ = ${cos}, Q = ${Q.toFixed(2)} квар.\n` +
+      `  Расчетный ток: Iр = ${Ip.toFixed(1)} А ≤ Iдоп.расч = ${idopBase} × ${kTotal} × ${seg.n} = ${idopTotal.toFixed(0)} А (загрузка ${loadPct.toFixed(0)}%).\n` +
+      `  Сопротивления: R = ${R.toFixed(4)} Ом, X = ${X.toFixed(4)} Ом.\n` +
+      `  Потеря напряжения: ΔU${i+1} = (${seg.P}×${R.toFixed(4)} + ${Q.toFixed(2)}×${X.toFixed(4)}) / (10×${uNom}²) = ${duPct.toFixed(2)}% (${duVolt.toFixed(1)} В). Суммарно ΔUΣ = ${sumDuPct.toFixed(2)}%.`
+    );
+  });
+
+  container.innerHTML = html;
+  document.querySelector('#summaryTable tbody').innerHTML = tableRows;
+  document.getElementById('pzReport').value = reportLines.join('\n\n');
+}
+
+function copyReport() {
+  const area = document.getElementById('pzReport');
+  area.select();
+  document.execCommand('copy');
+}
+
+renderAll();
+</script>
+</body>
+</html>
