@@ -17,8 +17,6 @@
       --success-bg: #dcfce7;
       --danger: #dc2626;
       --danger-bg: #fee2e2;
-      --warning: #d97706;
-      --warning-bg: #fef3c7;
     }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { margin: 0; padding: 16px; background: var(--bg); color: var(--text); line-height: 1.45; }
@@ -154,7 +152,6 @@ const R0_TABLE = {
   Cu: { 4:4.61, 6:3.08, 10:1.83, 16:1.15, 25:0.727, 35:0.524, 50:0.387, 70:0.268, 95:0.193, 120:0.153, 150:0.124, 185:0.0991, 240:0.0754, 300:0.0601, 400:0.0470 }
 };
 
-// Базовые длительно допустимые токи Iдоп (А) для 0,4-10 кВ: [Земля, Воздух]
 const IDOP_TABLE = {
   pvc: {
     Al: { 4:[32,24], 6:[40,31], 10:[55,42], 16:[75,56], 25:[95,73], 35:[115,89], 50:[140,108], 70:[175,135], 95:[210,164], 120:[240,189], 150:[275,217], 185:[310,248], 240:[360,292], 300:[410,335], 400:[470,390] },
@@ -174,10 +171,9 @@ const IDOP_TABLE = {
   }
 };
 
-// Справочник способов прокладки (по умолчанию pipe_090)
 const LAY_MODES = {
-  pipe_090: { label: "В отдельных трубах ПНД / ГНБ — k = 0,90", short: "Отд. трубы ПНД/ГНБ (k=0,90)", env: "ground", kPipe: 0.90 },
-  pipe_094: { label: "Частично в трубах (короткие переходы) — k = 0,94", short: "Частично в трубах (k=0,94)", env: "ground", kPipe: 0.94 },
+  pipe_090: { label: "В отдельных трубах ПНД / ГНБ — k = 0,90[cite: 3]", short: "Отд. трубы ПНД/ГНБ (k=0,90)", env: "ground", kPipe: 0.90 },
+  pipe_094: { label: "Частично в трубах (короткие переходы) — k = 0,94[cite: 3]", short: "Частично в трубах (k=0,94)", env: "ground", kPipe: 0.94 },
   trench:   { label: "В земле (траншея без труб) — k = 1,00", short: "Траншея (k=1,00)", env: "ground", kPipe: 1.00 },
   pipe_pue: { label: "В трубах по ПУЭ п.1.3.10 / ГОСТ 31996 (ток как на воздухе)", short: "Трубы по ПУЭ (ток воздух)", env: "air", kPipe: 1.00 },
   air:      { label: "На воздухе / в лотке / коробе", short: "На воздухе", env: "air", kPipe: 1.00 }
@@ -192,7 +188,6 @@ function getDefaultX0(cableType, s) {
   return 0.072;
 }
 
-// Стандартный выбор по умолчанию: pipe_090 ("В отдельных трубах ПНД / ГНБ — k = 0,90")
 let segments = [
   {
     from: "РУ-0,4 кВ ТП-1",
@@ -275,7 +270,6 @@ function updateSeg(idx, field, val) {
     seg[field] = val;
   }
 
-  // При смене способа прокладки автоматически подставляем соответствующий kPipe
   if (field === 'layMode' && LAY_MODES[val]) {
     seg.kPipe = LAY_MODES[val].kPipe;
   }
@@ -389,7 +383,6 @@ function renderAll() {
     const uEndVolt = uNom * 1000 - sumDuVolt;
     const isDuOk = sumDuPct <= duLimit;
 
-    // Выпадающий список сечений с индикацией допустимого тока
     const grp = IDOP_TABLE[seg.cableType] || IDOP_TABLE.pvc;
     const matTbl = grp[seg.mat] || grp.Al;
     let sectionOptions = '';
@@ -402,31 +395,29 @@ function renderAll() {
       sectionOptions += `<option value="${sVal}" ${seg.s === sVal ? 'selected' : ''}>${mark} ${sVal} мм² (до ${maxI} А)</option>`;
     });
 
-    // Выпадающий список способов прокладки
     let layModeOptions = '';
     Object.keys(LAY_MODES).forEach(key => {
       layModeOptions += `<option value="${key}" ${seg.layMode === key ? 'selected' : ''}>${LAY_MODES[key].label}</option>`;
     });
 
     html += `
-    <div class="card">
+    <div class="card" id="segCard-${i}">
       <div class="section-title">
         <span>Участок №${i + 1}: ${seg.from} → ${seg.to}</span>
         ${segments.length > 1 ? `<button class="btn btn-outline btn-sm" style="margin:0;color:#dc2626;" onclick="removeSegment(${i})">✕ Удалить участок</button>` : ''}
       </div>
 
       <div class="seg-layout">
-        <!-- ЛЕВАЯ КОЛОНКА: ВВОД ДАННЫХ -->
         <div>
           <div class="sub-box">
             <div class="grid-2" style="margin-bottom:10px;">
               <div>
                 <label>Начало участка (Откуда)</label>
-                <input type="text" value="${seg.from}" onchange="updateSeg(${i}, 'from', this.value)">
+                <input type="text" value="${seg.from}" oninput="updateSeg(${i}, 'from', this.value)">
               </div>
               <div>
                 <label>Конец участка (Куда)</label>
-                <input type="text" value="${seg.to}" onchange="updateSeg(${i}, 'to', this.value)">
+                <input type="text" value="${seg.to}" oninput="updateSeg(${i}, 'to', this.value)">
               </div>
             </div>
             <div class="grid-2">
@@ -530,7 +521,6 @@ function renderAll() {
               </div>
             </div>
 
-            <!-- БЛОК ПРОВЕРКИ СЕЧЕНИЯ ПО ТОКУ -->
             ${isOverloaded ? `
               <div class="overload-alert">
                 <strong>⚠️ Сечение ${seg.n > 1 ? seg.n + '×' : ''}${seg.s} мм² не проходит по длительно допустимому току!</strong>
@@ -551,7 +541,6 @@ function renderAll() {
           </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА: РЕЗУЛЬТАТ РАСЧЕТА ПОТЕРЬ -->
         <div class="result-panel ${isOverloaded ? 'blocked' : ''}">
           ${isOverloaded ? `
             <div class="lock-overlay">
@@ -619,6 +608,9 @@ function renderAll() {
       `  Потеря напряжения: ΔU${i+1} = (${seg.P}×${R.toFixed(4)} + ${Q.toFixed(2)}×${X.toFixed(4)}) / (10×${uNom}²) = ${duPct.toFixed(2)}% (${duVolt.toFixed(1)} В). Суммарно ΔUΣ = ${sumDuPct.toFixed(2)}%.`
     );
   });
+
+  const activeElementId = document.activeElement ? document.activeElement.id : null;
+  const activeElementClass = document.activeElement ? document.activeElement.className : null;
 
   container.innerHTML = html;
   document.querySelector('#summaryTable tbody').innerHTML = tableRows;
